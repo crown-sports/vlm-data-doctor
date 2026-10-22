@@ -1,18 +1,19 @@
 # VLM Data Doctor
 
-训练前检查图文 SFT 数据：定位缺图、格式错误和训练／评测集重叠。
+训练前定位图文数据问题，生成能追溯来源、复核重叠的训练／评测划分。
 
 [![CI](https://github.com/crown-sports/vlm-data-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/crown-sports/vlm-data-doctor/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3670a0)](pyproject.toml)
 [![MIT](https://img.shields.io/badge/License-MIT-196c57)](LICENSE)
 [![公开预览](https://img.shields.io/badge/Release-v0.3.0%20preview-196c57)](https://github.com/crown-sports/vlm-data-doctor/releases/tag/v0.3.0)
 
-[English](README.md) · [快速开始](#快速开始) · [使用场景](docs/impact.zh-CN.md) · [规则](docs/checks.md) · [LlamaFactory 接入](docs/integrations/llamafactory.md)
+[English](README.md) · [快速开始](#快速开始) · [价值与实现证据](docs/product.md) · [使用场景](docs/impact.zh-CN.md) · [规则](docs/checks.md) · [LlamaFactory 接入](docs/integrations/llamafactory.md)
 
 JSON 能解析，不代表数据能直接用于训练。图片可能没拷全，`<image>` 可能与图片数量不匹配，
 随机拆分也可能把同一份文档的不同页面分进训练集和评测集。
 
-这个工具检查本地数据，输出带行号、字段和处理建议的报告。适合放在标注导出之后、训练任务提交之前。
+适合负责图文 SFT 数据的标注负责人和算法工程师。放在标注导出之后、训练任务提交之前：
+拿到带行号、字段和处理建议的离线报告，或一对 train/eval 文件与说明相关样本为何分在一起的划分清单。
 
 ## 什么时候用
 
@@ -33,20 +34,14 @@ JSON 能解析，不代表数据能直接用于训练。图片可能没拷全，
 需要 Python 3.10+，从仓库安装：
 
 ```bash
-git clone https://github.com/crown-sports/vlm-data-doctor.git
+git clone --branch v0.3.0 https://github.com/crown-sports/vlm-data-doctor.git
 cd vlm-data-doctor
 python -m venv .venv
 ```
 
 macOS/Linux 执行 `source .venv/bin/activate`；Windows PowerShell 执行 `.venv\Scripts\Activate.ps1`。
 
-安装固定版本（GitHub public preview；不依赖 PyPI 发布）：
-
-```sh
-python -m pip install git+https://github.com/crown-sports/vlm-data-doctor.git@v0.3.0
-```
-
-或者安装当前源码并运行仓库内的示例：
+安装已固定到 v0.3.0 的源码，示例就在当前目录；不依赖 PyPI 发布：
 
 ```bash
 python -m pip install .
@@ -81,6 +76,17 @@ ERROR split_group_overlap eval:1 document_id: The selected group also appears at
 完整样例包含不启用分组检查、启用检查、改用独立文档评测三个步骤。
 分组 ID 由数据提供者指定；工具不会从图片中识别文档来源。
 
+## 自动生成防泄漏划分
+
+```bash
+vlm-data-doctor split examples/document-split/all.jsonl --group-key document_id --eval-fraction 0.2 --seed 42 --output manual-split
+vlm-data-doctor check manual-split/train.jsonl --eval manual-split/eval.jsonl --image-root examples/document-split --group-key document_id --strict
+```
+
+预期：3 条来源记录全部分配，手册 A 两页留在同一侧，最后检查无错误和警告。打开 `manual-split/manifest.json` 看原始行号、分组和复核结果。接入自己的数据时替换输入文件和图片根目录。
+
+按文档、相同图片字节、规范化输入建立传递连通分量，保持相关样本在同一侧，输出 train/eval JSONL 和含原始行号、SHA-256、复核结果的 manifest。目标目录必须不存在，缺失的父目录会自动创建。比例按连通分量计算，不保证精确行数比例；数据全连通或有错误时拒绝输出。保留所有原始记录与图片路径，图片不复制，后续检查请用原始 `--image-root`。manifest 记录本机图片根目录，公开分享前注意这一字段。当前需将数据行载入内存，不检测重压缩或语义相似图片。
+
 ## 接入自己的数据
 
 支持 JSON 数组或 JSONL，格式为 `messages` 或 ShareGPT `conversations`：
@@ -104,7 +110,7 @@ vlm-data-doctor check data/train.jsonl --eval data/test.jsonl --image-root data 
 ```
 
 退出码：`0` = 无错误；`1` = 有数据错误；`2` = 参数或读写失败。`--strict` 会把警告也作为失败条件。
-输出目录需已存在。相同图片跨集合出现通常需要复核，不应一律删除。
+`check` 报告的输出父目录需已存在。相同图片跨集合出现通常需要复核，不应一律删除。
 
 [LlamaFactory 数据映射与训练前检查](docs/integrations/llamafactory.md) · [Python API、完整规则与边界](docs/checks.md)
 
@@ -112,6 +118,9 @@ vlm-data-doctor check data/train.jsonl --eval data/test.jsonl --image-root data 
 
 格式检查使用固定规则；图片通过 Pillow 完整解码；重复检查使用规范化对话和图片文件字节的 SHA-256 指纹。
 按来源拆分则比较用户指定的组 ID。没有学习模型或语义质量评分。
+
+现有价值是把检查、按关联证据划分和复核清单接成一个流程，并覆盖传递关联、导出后图片路径等边界。
+[实现证据、当前局限与未来需要积累的验证](docs/product.md)。
 
 | 已运行的验证 | 结果与范围 |
 | --- | --- |
@@ -132,11 +141,3 @@ vlm-data-doctor check data/train.jsonl --eval data/test.jsonl --image-root data 
 [贡献指南](CONTRIBUTING.md) · [版本变化](CHANGELOG.md) · [软件引用](CITATION.cff)
 
 代码和自行生成的示例使用 MIT 许可证。
-
-## 自动生成防泄漏划分
-
-```bash
-vlm-data-doctor split data/all.jsonl --group-key document_id --eval-fraction 0.2 --seed 42 --output splits/run-42
-```
-
-按文档、相同图片字节、规范化输入建立传递连通分量，保持相关样本在同一侧，输出 train/eval JSONL 和含原始行号、SHA-256、复核结果的 manifest。输出目录必须不存在，父目录需已存在。比例按连通分量计算，不保证精确行数比例；数据全连通或有错误时拒绝输出。保留所有原始记录与图片路径，图片不复制，后续检查请用原始 `--image-root`。manifest 记录本机图片根目录，公开分享前注意这一字段。当前需将数据行载入内存，不检测重压缩或语义相似图片。
