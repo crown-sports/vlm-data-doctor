@@ -1,0 +1,3 @@
+{"document_id": "manual-a", "messages": [{"role": "user", "content": "<image>Which team owns this manual?"}, {"role": "assistant", "content": "North team"}], "images": ["manual-a-page-1.png"]}
+{"document_id": "manual-a", "messages": [{"role": "user", "content": "<image>What is the review interval?"}, {"role": "assistant", "content": "30 days"}], "images": ["manual-a-page-2.png"]}
+{"document_id": "manual-b", "messages": [{"role": "user", "content": "<image>Which team owns this manual?"}, {"role": "assistant", "content": "South team"}], "images": ["manual-b-page-1.png"]}
