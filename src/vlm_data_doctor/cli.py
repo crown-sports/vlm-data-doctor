@@ -29,8 +29,24 @@ def main(argv: list[str] | None = None) -> int:
     check.add_argument("--format", choices=["text", "json", "markdown", "html"], default="text")
     check.add_argument("--output", type=Path, help="Write a new report file (never overwrite an existing file)")
     check.add_argument("--strict", action="store_true", help="Fail on warnings as well as errors")
+    split = commands.add_parser("split", help="Create audited source/image/input-disjoint train/eval splits")
+    split.add_argument("source", type=Path)
+    split.add_argument("--output", required=True, type=Path, help="New output directory")
+    split.add_argument("--group-key", required=True)
+    split.add_argument("--image-root", type=Path)
+    split.add_argument("--eval-fraction", type=float, default=0.2, help="Fraction of independent components, not rows")
+    split.add_argument("--seed", type=int, default=0)
     args = parser.parse_args(argv)
     try:
+        if args.command == "split":
+            from .split import split_dataset
+            import json
+            manifest = split_dataset(args.source, args.output, group_key=args.group_key,
+                                     eval_fraction=args.eval_fraction, seed=args.seed,
+                                     image_root=args.image_root)
+            print(json.dumps({"output": str(args.output), "counts": manifest["counts"],
+                              "components": manifest["components"]}))
+            return 0
         report = audit(args.train, evaluation=args.evaluation,
                        image_root=args.image_root, eval_image_root=args.eval_image_root,
                        max_pixels=args.max_pixels, group_key=args.group_key)

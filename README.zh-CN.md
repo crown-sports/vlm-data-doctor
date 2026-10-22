@@ -124,3 +124,11 @@ vlm-data-doctor check data/train.jsonl --eval data/test.jsonl --image-root data 
 [贡献指南](CONTRIBUTING.md) · [版本变化](CHANGELOG.md) · [软件引用](CITATION.cff)
 
 代码和自行生成的示例使用 MIT 许可证。
+
+## 自动生成防泄漏划分
+
+```bash
+vlm-data-doctor split data/all.jsonl --group-key document_id --eval-fraction 0.2 --seed 42 --output splits/run-42
+```
+
+按文档、相同图片字节、规范化输入建立传递连通分量，保持相关样本在同一侧，输出 train/eval JSONL 和含原始行号、SHA-256、复核结果的 manifest。输出目录必须不存在，父目录需已存在。比例按连通分量计算，不保证精确行数比例；数据全连通或有错误时拒绝输出。保留所有原始记录与图片路径，图片不复制，后续检查请用原始 `--image-root`。manifest 记录本机图片根目录，公开分享前注意这一字段。当前需将数据行载入内存，不检测重压缩或语义相似图片。

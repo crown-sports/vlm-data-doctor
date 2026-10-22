@@ -79,6 +79,26 @@ ERROR split_group_overlap eval:1 document_id: The selected group also appears at
 The example includes checks without grouping, with grouping, and with a separate
 manual for evaluation. Group IDs come from your data; the checker does not infer them.
 
+## Create a leakage-aware split
+
+```bash
+vlm-data-doctor split data/all.jsonl --group-key document_id --eval-fraction 0.2 --seed 42 --output splits/run-42
+vlm-data-doctor check splits/run-42/train.jsonl --eval splits/run-42/eval.jsonl --image-root data --group-key document_id
+```
+
+The output directory must be new and its parent must exist. The splitter keeps
+all rows from the same document together, including transitive connections through
+identical image bytes or identical normalized inputs. It writes `train.jsonl`,
+`eval.jsonl` and a manifest with source rows, SHA-256 fingerprints and the final
+audit. Invalid inputs and inseparable data fail before publishing outputs.
+
+`--eval-fraction` selects a fraction of **independent components**, so the row ratio
+can differ. Fixed seed and unchanged component membership give the same assignment
+even when source rows are reordered. Original rows and image paths are preserved;
+images are not copied. Use the original image root when checking or training from
+the exported files. The manifest records that local absolute root. This command
+loads rows into memory and detects exact evidence reuse, not visual near duplicates.
+
 ## Bring your data
 
 Use a JSON array or JSONL, with `messages` or ShareGPT `conversations`:
