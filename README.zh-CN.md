@@ -2,10 +2,10 @@
 
 训练前检查图文 SFT 数据：定位缺图、格式错误和训练／评测集重叠。
 
-[![CI](https://github.com/chrischen-coder/vlm-data-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/chrischen-coder/vlm-data-doctor/actions/workflows/ci.yml)
+[![CI](https://github.com/crown-sports/vlm-data-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/crown-sports/vlm-data-doctor/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3670a0)](pyproject.toml)
 [![MIT](https://img.shields.io/badge/License-MIT-196c57)](LICENSE)
-[![公开预览](https://img.shields.io/badge/Release-v0.2.0%20preview-196c57)](https://github.com/chrischen-coder/vlm-data-doctor/releases/tag/v0.2.0)
+[![公开预览](https://img.shields.io/badge/Release-v0.3.0%20preview-196c57)](https://github.com/crown-sports/vlm-data-doctor/releases/tag/v0.3.0)
 
 [English](README.md) · [快速开始](#快速开始) · [使用场景](docs/impact.zh-CN.md) · [规则](docs/checks.md) · [LlamaFactory 接入](docs/integrations/llamafactory.md)
 
@@ -26,19 +26,27 @@ JSON 能解析，不代表数据能直接用于训练。图片可能没拷全，
 
 ![故障样例生成的 HTML 报告：规则、行号、字段和处理建议](docs/assets/report-desktop.png)
 
-报告可搜索、按严重程度筛选。[下载离线示例](https://github.com/chrischen-coder/vlm-data-doctor/releases/download/v0.2.0/report.html) · [手机端截图](docs/assets/report-mobile.png)
+报告可搜索、按严重程度筛选。[下载离线示例](https://github.com/crown-sports/vlm-data-doctor/releases/download/v0.2.0/report.html) · [手机端截图](docs/assets/report-mobile.png)
 
 ## 快速开始
 
 需要 Python 3.10+，从仓库安装：
 
 ```bash
-git clone https://github.com/chrischen-coder/vlm-data-doctor.git
+git clone https://github.com/crown-sports/vlm-data-doctor.git
 cd vlm-data-doctor
 python -m venv .venv
 ```
 
 macOS/Linux 执行 `source .venv/bin/activate`；Windows PowerShell 执行 `.venv\Scripts\Activate.ps1`。
+
+安装固定版本（GitHub public preview；不依赖 PyPI 发布）：
+
+```sh
+python -m pip install git+https://github.com/crown-sports/vlm-data-doctor.git@v0.3.0
+```
+
+或者安装当前源码并运行仓库内的示例：
 
 ```bash
 python -m pip install .
@@ -124,3 +132,11 @@ vlm-data-doctor check data/train.jsonl --eval data/test.jsonl --image-root data 
 [贡献指南](CONTRIBUTING.md) · [版本变化](CHANGELOG.md) · [软件引用](CITATION.cff)
 
 代码和自行生成的示例使用 MIT 许可证。
+
+## 自动生成防泄漏划分
+
+```bash
+vlm-data-doctor split data/all.jsonl --group-key document_id --eval-fraction 0.2 --seed 42 --output splits/run-42
+```
+
+按文档、相同图片字节、规范化输入建立传递连通分量，保持相关样本在同一侧，输出 train/eval JSONL 和含原始行号、SHA-256、复核结果的 manifest。输出目录必须不存在，父目录需已存在。比例按连通分量计算，不保证精确行数比例；数据全连通或有错误时拒绝输出。保留所有原始记录与图片路径，图片不复制，后续检查请用原始 `--image-root`。manifest 记录本机图片根目录，公开分享前注意这一字段。当前需将数据行载入内存，不检测重压缩或语义相似图片。

@@ -59,3 +59,15 @@ new questions about known documents may legitimately use another split policy.
 This example makes no claim about the model-score effect of changing the split.
 
 [Project](../../README.md) · [Use cases](../../docs/impact.md)
+
+## Generate the split instead of repairing one by hand
+
+```bash
+vlm-data-doctor split examples/document-split/all.jsonl --group-key document_id --seed 42 --output /tmp/manual-split
+vlm-data-doctor check /tmp/manual-split/train.jsonl --eval /tmp/manual-split/eval.jsonl --image-root examples/document-split --group-key document_id --strict
+```
+
+Use a new output directory each time. `all.jsonl` combines the three existing
+fixture records. Both pages of manual A stay together; manual B goes to the other
+split. The manifest lists original source rows and file hashes. Images remain in
+this example directory, so the explicit image root is required after export.

@@ -2,10 +2,10 @@
 
 Check image-text SFT data for broken records and train/eval overlap before training.
 
-[![CI](https://github.com/chrischen-coder/vlm-data-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/chrischen-coder/vlm-data-doctor/actions/workflows/ci.yml)
+[![CI](https://github.com/crown-sports/vlm-data-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/crown-sports/vlm-data-doctor/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3670a0)](pyproject.toml)
 [![MIT](https://img.shields.io/badge/License-MIT-196c57)](LICENSE)
-[![Public preview](https://img.shields.io/badge/Release-v0.2.0%20preview-196c57)](https://github.com/chrischen-coder/vlm-data-doctor/releases/tag/v0.2.0)
+[![Public preview](https://img.shields.io/badge/Release-v0.3.0%20preview-196c57)](https://github.com/crown-sports/vlm-data-doctor/releases/tag/v0.3.0)
 
 [简体中文](README.zh-CN.md) · [Quick start](#quick-start) · [Use cases](docs/impact.md) · [Checks](docs/checks.md) · [LlamaFactory](docs/integrations/llamafactory.md)
 
@@ -28,19 +28,27 @@ or detect recompressed, cropped or semantically similar images.
 
 ![HTML report generated from the included broken fixture](docs/assets/report-desktop.png)
 
-Search findings and filter by severity. [Download the offline example](https://github.com/chrischen-coder/vlm-data-doctor/releases/download/v0.2.0/report.html) · [Mobile view](docs/assets/report-mobile.png)
+Search findings and filter by severity. [Download the offline example](https://github.com/crown-sports/vlm-data-doctor/releases/download/v0.2.0/report.html) · [Mobile view](docs/assets/report-mobile.png)
 
 ## Quick start
 
 Python 3.10+. Install from the repository:
 
 ```bash
-git clone https://github.com/chrischen-coder/vlm-data-doctor.git
+git clone https://github.com/crown-sports/vlm-data-doctor.git
 cd vlm-data-doctor
 python -m venv .venv
 ```
 
 Activate with `source .venv/bin/activate` on macOS/Linux or `.venv\Scripts\Activate.ps1` in Windows PowerShell.
+
+Install the pinned GitHub public preview (no PyPI release is required):
+
+```sh
+python -m pip install git+https://github.com/crown-sports/vlm-data-doctor.git@v0.3.0
+```
+
+Or install this checkout and run its included examples:
 
 ```bash
 python -m pip install .
@@ -78,6 +86,26 @@ ERROR split_group_overlap eval:1 document_id: The selected group also appears at
 
 The example includes checks without grouping, with grouping, and with a separate
 manual for evaluation. Group IDs come from your data; the checker does not infer them.
+
+## Create a leakage-aware split
+
+```bash
+vlm-data-doctor split data/all.jsonl --group-key document_id --eval-fraction 0.2 --seed 42 --output splits/run-42
+vlm-data-doctor check splits/run-42/train.jsonl --eval splits/run-42/eval.jsonl --image-root data --group-key document_id
+```
+
+The output directory must be new and its parent must exist. The splitter keeps
+all rows from the same document together, including transitive connections through
+identical image bytes or identical normalized inputs. It writes `train.jsonl`,
+`eval.jsonl` and a manifest with source rows, SHA-256 fingerprints and the final
+audit. Invalid inputs and inseparable data fail before publishing outputs.
+
+`--eval-fraction` selects a fraction of **independent components**, so the row ratio
+can differ. Fixed seed and unchanged component membership give the same assignment
+even when source rows are reordered. Original rows and image paths are preserved;
+images are not copied. Use the original image root when checking or training from
+the exported files. The manifest records that local absolute root. This command
+loads rows into memory and detects exact evidence reuse, not visual near duplicates.
 
 ## Bring your data
 
