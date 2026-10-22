@@ -1,0 +1,6 @@
+include CHANGELOG.md README.zh-CN.md
+graft examples
+graft docs
+graft benchmarks
+include tools/check_sdist.py
+global-exclude __pycache__ *.py[cod] .DS_Store

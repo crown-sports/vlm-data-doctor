@@ -90,6 +90,7 @@ def split_dataset(source: str | Path, output: str | Path, *, group_key: str,
         partitions[label].append(record)
         assignments[label].append(line)
     # Validate staging before publishing; no incomplete dataset on validation failure.
+    output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='.vlm-split-', dir=output.parent) as folder:
         staging = Path(folder)
         for label, records in partitions.items():

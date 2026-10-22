@@ -2,10 +2,10 @@
 
 Check image-text SFT data for broken records and train/eval overlap before training.
 
-[![CI](https://github.com/chrischen-coder/vlm-data-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/chrischen-coder/vlm-data-doctor/actions/workflows/ci.yml)
+[![CI](https://github.com/crown-sports/vlm-data-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/crown-sports/vlm-data-doctor/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3670a0)](pyproject.toml)
 [![MIT](https://img.shields.io/badge/License-MIT-196c57)](LICENSE)
-[![Public preview](https://img.shields.io/badge/Release-v0.2.0%20preview-196c57)](https://github.com/chrischen-coder/vlm-data-doctor/releases/tag/v0.2.0)
+[![Public preview](https://img.shields.io/badge/Release-v0.3.0%20preview-196c57)](https://github.com/crown-sports/vlm-data-doctor/releases/tag/v0.3.0)
 
 [简体中文](README.zh-CN.md) · [Quick start](#quick-start) · [Use cases](docs/impact.md) · [Checks](docs/checks.md) · [LlamaFactory](docs/integrations/llamafactory.md)
 
@@ -28,19 +28,27 @@ or detect recompressed, cropped or semantically similar images.
 
 ![HTML report generated from the included broken fixture](docs/assets/report-desktop.png)
 
-Search findings and filter by severity. [Download the offline example](https://github.com/chrischen-coder/vlm-data-doctor/releases/download/v0.2.0/report.html) · [Mobile view](docs/assets/report-mobile.png)
+Search findings and filter by severity. [Download the offline example](https://github.com/crown-sports/vlm-data-doctor/releases/download/v0.2.0/report.html) · [Mobile view](docs/assets/report-mobile.png)
 
 ## Quick start
 
 Python 3.10+. Install from the repository:
 
 ```bash
-git clone https://github.com/chrischen-coder/vlm-data-doctor.git
+git clone https://github.com/crown-sports/vlm-data-doctor.git
 cd vlm-data-doctor
 python -m venv .venv
 ```
 
 Activate with `source .venv/bin/activate` on macOS/Linux or `.venv\Scripts\Activate.ps1` in Windows PowerShell.
+
+Install the pinned GitHub public preview (no PyPI release is required):
+
+```sh
+python -m pip install git+https://github.com/crown-sports/vlm-data-doctor.git@v0.3.0
+```
+
+Or install this checkout and run its included examples:
 
 ```bash
 python -m pip install .

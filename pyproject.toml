@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vlm-data-doctor"
-version = "0.2.0"
+version = "0.3.0"
 description = "Offline preflight checks for image-text fine-tuning datasets."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -22,8 +22,8 @@ classifiers = [
 vlm-data-doctor = "vlm_data_doctor.cli:main"
 
 [project.urls]
-Repository = "https://github.com/chrischen-coder/vlm-data-doctor"
-Issues = "https://github.com/chrischen-coder/vlm-data-doctor/issues"
+Repository = "https://github.com/crown-sports/vlm-data-doctor"
+Issues = "https://github.com/crown-sports/vlm-data-doctor/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

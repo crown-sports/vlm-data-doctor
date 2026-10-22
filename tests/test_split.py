@@ -90,6 +90,18 @@ class SplitTests(unittest.TestCase):
                 self.split()
             self.assertFalse((self.root / 'split').exists())
 
+    def test_cli_creates_nested_output_parent_without_overwriting_a_split(self):
+        self.write([self.row('a'), self.row('b')])
+        output = self.root / 'splits' / 'run-42'
+        args = ['split', str(self.source), '--group-key', 'document_id', '--output', str(output)]
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(main(args), 0)
+        before = {path.name: path.read_bytes() for path in output.iterdir()}
+        self.assertEqual(set(before), {'train.jsonl', 'eval.jsonl', 'manifest.json'})
+        with contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(main(args), 2)
+        self.assertEqual(before, {path.name: path.read_bytes() for path in output.iterdir()})
+
     def test_cli_and_configuration(self):
         self.write([self.row('a'), self.row('b')])
         with contextlib.redirect_stdout(io.StringIO()):
