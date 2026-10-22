@@ -5,7 +5,7 @@ Distribution: public preview (GitHub prerelease), with a wheel, source distribut
 Build from the final clean commit after its pull request has merged and CI has passed:
 
 ```sh
-python -m pip install build
+python -m pip install . build
 python -m unittest discover -s tests -v
 python -m build
 python tools/check_sdist.py
