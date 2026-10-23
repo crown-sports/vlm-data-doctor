@@ -118,7 +118,7 @@ and environment produce deterministic output.
   JSON arrays load in full. This is not a bounded-memory dataset pipeline.
 - JSONL locations are physical line numbers, including blank lines in the count.
   JSON-array rows are one-based positions; row 0 identifies a dataset-level issue.
-- Text, JSON, Markdown and HTML output are supported. On main, missing report
+- Text, JSON, Markdown and HTML output are supported. Since v0.3.1, missing report
   directories are created and the saved path is printed to stderr. In v0.3.0,
   create the parent directory first. Both refuse to overwrite a file. Exit `1` still writes the report;
   exit `2` indicates a CLI, configuration, I/O, encoding or report-writing failure.
@@ -131,10 +131,9 @@ and environment produce deterministic output.
 
 ## Find a report and recover from a failed run
 
-For the README's v0.3.0 checkout, create an output folder before using a nested path:
+With v0.3.1, nested report directories are created automatically:
 
 ```bash
-python -c "from pathlib import Path; Path('reports/run-1').mkdir(parents=True, exist_ok=True)"
 vlm-data-doctor check examples/broken/train.jsonl --eval examples/broken/validation.jsonl --image-root examples/clean --format html --output reports/run-1/audit.html
 ```
 

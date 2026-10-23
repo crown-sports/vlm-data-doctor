@@ -3,7 +3,7 @@
 训练前检查图文数据：找出坏记录，再把相关页面留在同一侧划分。
 
 [![CI](https://github.com/crown-sports/vlm-data-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/crown-sports/vlm-data-doctor/actions/workflows/ci.yml)
-[Python 3.10+](pyproject.toml) · [v0.3.0 预览版](https://github.com/crown-sports/vlm-data-doctor/releases/tag/v0.3.0) · [MIT](LICENSE)
+[Python 3.10+](pyproject.toml) · [v0.3.1 预览版](https://github.com/crown-sports/vlm-data-doctor/releases/tag/v0.3.1) · [MIT](LICENSE)
 
 [English](README.md) · [试用](#先看一份报告) · [检查规则](docs/checks.md) · [LlamaFactory 接入](docs/integrations/llamafactory.md)
 
@@ -17,7 +17,7 @@
 ## 先看一份报告
 
 ```bash
-git clone --branch v0.3.0 https://github.com/crown-sports/vlm-data-doctor.git
+git clone --branch v0.3.1 https://github.com/crown-sports/vlm-data-doctor.git
 cd vlm-data-doctor
 python -m venv .venv
 ```

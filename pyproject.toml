@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vlm-data-doctor"
-version = "0.3.0"
+version = "0.3.1"
 description = "Offline preflight checks for image-text fine-tuning datasets."
 readme = "README.md"
 requires-python = ">=3.10"

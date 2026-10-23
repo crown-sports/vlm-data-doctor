@@ -3,7 +3,7 @@
 Check an image-text dataset before the training run: find broken records, then split related pages together.
 
 [![CI](https://github.com/crown-sports/vlm-data-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/crown-sports/vlm-data-doctor/actions/workflows/ci.yml)
-[Python 3.10+](pyproject.toml) · [v0.3.0 preview](https://github.com/crown-sports/vlm-data-doctor/releases/tag/v0.3.0) · [MIT](LICENSE)
+[Python 3.10+](pyproject.toml) · [v0.3.1 preview](https://github.com/crown-sports/vlm-data-doctor/releases/tag/v0.3.1) · [MIT](LICENSE)
 
 [简体中文](README.zh-CN.md) · [Quick start](#try-the-report) · [Checks](docs/checks.md) · [LlamaFactory](docs/integrations/llamafactory.md)
 
@@ -18,7 +18,7 @@ field and suggested fix. It also catches exact overlap between train and eval.
 ## Try the report
 
 ```bash
-git clone --branch v0.3.0 https://github.com/crown-sports/vlm-data-doctor.git
+git clone --branch v0.3.1 https://github.com/crown-sports/vlm-data-doctor.git
 cd vlm-data-doctor
 python -m venv .venv
 ```
