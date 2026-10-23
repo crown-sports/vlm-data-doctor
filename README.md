@@ -87,7 +87,7 @@ vlm-data-doctor check data/train.jsonl --eval data/test.jsonl --image-root data 
 Replace the paths with yours. Images resolve relative to the dataset file unless
 an image root is supplied. `document_id` is only required when selected with
 `--group-key`. Exit codes: `0` no errors, `1` data errors, `2` configuration/I/O error;
-`--strict` also fails on warnings. Report parent directories must already exist.
+`--strict` also fails on warnings. Missing report parent directories are created automatically; existing reports are preserved.
 
 The checks cover format, image decoding and exact overlap. They do not judge
 answer quality or find cropped/recompressed near duplicates.

@@ -80,7 +80,7 @@ vlm-data-doctor check data/train.jsonl --eval data/test.jsonl --image-root data 
 
 替换为自己的路径。图片默认相对于数据文件目录，也可用 `--image-root` 指定根目录。
 `document_id` 仅在选用 `--group-key` 时必填。退出码：`0` 无错误，`1` 有数据错误，`2` 参数或读写失败；
-`--strict` 也会在有警告时失败。报告的父目录需已存在。
+`--strict` 也会在有警告时失败。缺失的报告父目录会自动创建，已有报告不会被覆盖。
 
 目前检查格式、图片解码和精确重叠，不判断答案质量，也不检测裁剪、重压缩后的近重复图片。
 
