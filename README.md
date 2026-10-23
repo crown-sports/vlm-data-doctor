@@ -92,6 +92,6 @@ an image root is supplied. `document_id` is only required when selected with
 The checks cover format, image decoding and exact overlap. They do not judge
 answer quality or find cropped/recompressed near duplicates.
 
-[Full rules and Python API](docs/checks.md) · [LlamaFactory setup](docs/integrations/llamafactory.md) · [Benchmarks](docs/benchmarks.md) · [Implementation notes](docs/product.md) · [Image sources](docs/screenshots.md)
+[Report paths and recovery](docs/checks.md#find-a-report-and-recover-from-a-failed-run) · [Full rules and Python API](docs/checks.md) · [LlamaFactory setup](docs/integrations/llamafactory.md) · [Benchmarks](docs/benchmarks.md) · [Implementation notes](docs/product.md) · [Image sources](docs/screenshots.md)
 
 [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md) · [Citation](CITATION.cff)

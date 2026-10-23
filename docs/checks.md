@@ -118,8 +118,9 @@ and environment produce deterministic output.
   JSON arrays load in full. This is not a bounded-memory dataset pipeline.
 - JSONL locations are physical line numbers, including blank lines in the count.
   JSON-array rows are one-based positions; row 0 identifies a dataset-level issue.
-- Text, JSON, Markdown and HTML output are supported. Output directories must exist,
-  and the CLI refuses to overwrite a file. Exit `1` still writes the report;
+- Text, JSON, Markdown and HTML output are supported. On main, missing report
+  directories are created and the saved path is printed to stderr. In v0.3.0,
+  create the parent directory first. Both refuse to overwrite a file. Exit `1` still writes the report;
   exit `2` indicates a CLI, configuration, I/O, encoding or report-writing failure.
 - Keep inputs unchanged during an audit: hashing and validation read them separately.
   The manifest records fingerprints, not a recoverable dataset snapshot.
@@ -127,3 +128,22 @@ and environment produce deterministic output.
   blocks and arbitrary field remapping are outside this profile.
 - Passing does not verify answer correctness, privacy, data licensing, tokenizer
   behavior or training success. Run a small training smoke test with your actual stack.
+
+## Find a report and recover from a failed run
+
+For the README's v0.3.0 checkout, create an output folder before using a nested path:
+
+```bash
+python -c "from pathlib import Path; Path('reports/run-1').mkdir(parents=True, exist_ok=True)"
+vlm-data-doctor check examples/broken/train.jsonl --eval examples/broken/validation.jsonl --image-root examples/clean --format html --output reports/run-1/audit.html
+```
+
+Open `reports/run-1/audit.html` relative to the directory where you ran the command.
+Exit `1` is expected here: the report contains the four fixture findings. Fix a
+reported row, then write the next report to a new path such as `reports/run-2/audit.html`.
+Keep earlier reports when you rerun the check.
+
+If the command exits `2`, read stderr before looking for a report. Check the input
+path, the image root and whether the output file already exists. Malformed JSON
+inside a readable dataset is a finding (`invalid_json`, exit `1`), so inspect its
+reported row. A successful text-only check is also valid; images are optional.

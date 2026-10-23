@@ -84,6 +84,6 @@ vlm-data-doctor check data/train.jsonl --eval data/test.jsonl --image-root data 
 
 目前检查格式、图片解码和精确重叠，不判断答案质量，也不检测裁剪、重压缩后的近重复图片。
 
-[完整规则与 Python API](docs/checks.md) · [LlamaFactory 接入](docs/integrations/llamafactory.md) · [性能测试](docs/benchmarks.md) · [实现说明](docs/product.md) · [图片来源](docs/screenshots.md)
+[报告路径与失败恢复](docs/checks.md#find-a-report-and-recover-from-a-failed-run) · [完整规则与 Python API](docs/checks.md) · [LlamaFactory 接入](docs/integrations/llamafactory.md) · [性能测试](docs/benchmarks.md) · [实现说明](docs/product.md) · [图片来源](docs/screenshots.md)
 
 [贡献指南](CONTRIBUTING.md) · [版本记录](CHANGELOG.md) · [软件引用](CITATION.cff)

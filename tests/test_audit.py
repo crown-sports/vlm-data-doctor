@@ -317,6 +317,25 @@ class AuditTests(unittest.TestCase):
         self.assertEqual(self.invoke("check", str(self.write([sample()])), "--format", "json", "--output", str(path))[0], 0)
         self.assertEqual(json.loads(path.read_text())["summary"]["errors"], 0)
 
+    def test_cli_nested_report_preserves_findings_and_refuses_rerun(self):
+        path = self.root / "reports" / "first" / "audit.json"
+        train = self.write([sample(image="missing.png")])
+        args = ("check", str(train), "--format", "json", "--output", str(path))
+        status, output, error = self.invoke(*args)
+        self.assertEqual(status, 1)
+        self.assertEqual(output, "")
+        self.assertIn(str(path.resolve()), error)
+        self.assertGreater(json.loads(path.read_text())["summary"]["errors"], 0)
+        original = path.read_bytes()
+        self.assertEqual(self.invoke(*args)[0], 2)
+        self.assertEqual(path.read_bytes(), original)
+
+    def test_cli_does_not_create_output_parent_for_missing_input(self):
+        output = self.root / "reports" / "audit.json"
+        self.assertEqual(self.invoke("check", str(self.root / "absent.jsonl"),
+                                     "--output", str(output))[0], 2)
+        self.assertFalse(output.parent.exists())
+
 
 if __name__ == "__main__":
     unittest.main()
