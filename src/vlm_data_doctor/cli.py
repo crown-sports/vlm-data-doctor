@@ -27,7 +27,7 @@ def main(argv: list[str] | None = None) -> int:
     check.add_argument("--max-pixels", type=_positive_int, default=40_000_000)
     check.add_argument("--group-key", help="Require a top-level group field and disjoint groups across splits")
     check.add_argument("--format", choices=["text", "json", "markdown", "html"], default="text")
-    check.add_argument("--output", type=Path, help="Write a new report file (never overwrite an existing file)")
+    check.add_argument("--output", type=Path, help="Write a new report file; create parent directories, never overwrite")
     check.add_argument("--strict", action="store_true", help="Fail on warnings as well as errors")
     split = commands.add_parser("split", help="Create audited source/image/input-disjoint train/eval splits")
     split.add_argument("source", type=Path)
@@ -53,8 +53,10 @@ def main(argv: list[str] | None = None) -> int:
         rendered = report.render(args.format) + "\n"
         if args.output:
             # Exclusive creation prevents accidental replacement of inputs or reports.
+            args.output.parent.mkdir(parents=True, exist_ok=True)
             with args.output.open("x", encoding="utf-8") as stream:
                 stream.write(rendered)
+            print(f"Report written to {args.output.resolve()}", file=sys.stderr)
         else:
             sys.stdout.write(rendered)
     except (OSError, UnicodeError, ValueError, RuntimeError) as error:
